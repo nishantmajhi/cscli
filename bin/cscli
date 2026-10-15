@@ -1,0 +1,25 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Cscli\Application;
+
+(static function (): void {
+    $autoloadCandidates = [
+        __DIR__ . '/../vendor/autoload.php',       // local dev / running from repo
+        __DIR__ . '/../../../autoload.php',        // installed as a composer dependency
+    ];
+
+    foreach ($autoloadCandidates as $autoload) {
+        if (file_exists($autoload)) {
+            require $autoload;
+            return;
+        }
+    }
+
+    fwrite(STDERR, "Dependencies not installed. Run 'composer install' first.\n");
+    exit(1);
+})();
+
+exit(Application::create()->run());
